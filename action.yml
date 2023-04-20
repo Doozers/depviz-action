@@ -1,0 +1,40 @@
+# inputs
+inputs:
+  targets: # format "org1/repo org2/repo"
+    description: "depviz target (format: \"org1/repo1 org1/repo2 org2 repo1\")" 
+    required: true
+  branch: 
+    description: "the branch where to push the generated files" 
+    default: "depviz-generate"
+
+
+runs:
+  using: "composite"
+  steps:
+  # checkout
+  - uses: actions/checkout@v3
+
+  # fetch & gen
+  # launch image
+  # setup depviz
+  # - run: make fetch
+    # env:
+      # GITHUB_TOKEN: ${GITHUB_TOKEN}
+      # TARGETS: ${INPUT_TARGET}
+  # - run: make gen-json
+  # - run: make gen-image
+
+  - run: |
+      echo "test" >> output/test
+
+  # commit
+  - run: git add output/
+  - uses: stefanzweifel/git-auto-commit-action@v4
+    env:          
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      file_pattern: 'output/*'
+      commit_message: "build: generate"
+      branch: ${INPUT_BRANCH}
+      push_options: '--force'
+      create_branch: true
